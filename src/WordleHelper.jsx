@@ -2339,50 +2339,45 @@ function App() {
   const matchesFeedback = (word, guesses) => {
     for (const { word: guess, result } of guesses) {
       const seen = Array(5).fill(false);
-      // First pass: Green check
+      const letterCountInWord = {};
+      const letterCountRequired = {};
+  
+      // 第一步：green 检查 + 记录字母出现次数
       for (let i = 0; i < 5; i++) {
-        if (result[i] === 'g' && word[i] !== guess[i]) return false;
-        if (result[i] === 'g') seen[i] = true;
+        const letter = guess[i];
+        if (result[i] === 'g') {
+          if (word[i] !== letter) return false;
+          seen[i] = true;
+          letterCountRequired[letter] = (letterCountRequired[letter] || 0) + 1;
+        }
       }
-      // Second pass: Yellow & Black check
+  
+      // 第二步：yellow 检查 + 记录数量
       for (let i = 0; i < 5; i++) {
+        const letter = guess[i];
         if (result[i] === 'y') {
-          if (word[i] === guess[i]) return false;
-          if (!word.includes(guess[i])) return false;
-        }
-  
-        if (result[i] === 'b') {
-          const letter = guess[i];
-          const isInGY = [...result].some((res, idx) =>
-            (res === 'g' || res === 'y') && guess[idx] === letter && idx !== i
-          );
-          if (!isInGY && word.includes(letter)) return false;
-  
-          const countInGuess = guess
-            .split('')
-            .filter((ch, idx) => ch === letter && result[idx] !== 'g' && idx !== i).length;
-          const countInWord = word
-            .split('')
-            .filter((ch, idx) => ch === letter && idx !== i).length;
-          if (countInWord > countInGuess) return false;
+          if (word[i] === letter) return false;
+          if (!word.includes(letter)) return false;
+          letterCountRequired[letter] = (letterCountRequired[letter] || 0) + 1;
         }
       }
-    }
   
-    // 💥 这段是新增的补丁：检查每个字母出现次数
-    const requiredLetterCounts = {};
-    for (const { word: guess, result } of guesses) {
+      // 第三步：black 检查
       for (let i = 0; i < 5; i++) {
-        if (result[i] === 'g' || result[i] === 'y') {
-          const letter = guess[i];
-          requiredLetterCounts[letter] = (requiredLetterCounts[letter] || 0) + 1;
+        const letter = guess[i];
+        if (result[i] === 'b') {
+          const inGY = guess
+            .split('')
+            .some((ch, idx) => (result[idx] === 'g' || result[idx] === 'y') && ch === letter);
+          if (!inGY && word.includes(letter)) return false;
         }
       }
-    }
   
-    for (const letter in requiredLetterCounts) {
-      const actualCount = word.split('').filter(ch => ch === letter).length;
-      if (actualCount < requiredLetterCounts[letter]) return false;
+      // 第四步：检查数量是否足够
+      for (const letter in letterCountRequired) {
+        const countInWord = word.split('').filter(ch => ch === letter).length;
+        if (countInWord < letterCountRequired[letter]) return false;
+      }
     }
   
     return true;
