@@ -2396,6 +2396,18 @@ function App() {
         <input value={currentResult} maxLength={5} placeholder="Result (e.g. gbbyb)" onChange={(e) => setCurrentResult(e.target.value)} />
         <button onClick={handleAddTry}>Add Try</button>
         <button onClick={handleSuggest}>Suggest Word</button>
+        <button
+          className="reset-button"
+          onClick={() => {
+            setTries([]);
+            setSuggestions([]);
+            setCurrentWord("");
+            setCurrentResult("");
+          }}
+        >
+          Reset History & Suggestions
+        </button>
+
       </div>
       <div className="history">
         <h2>History:</h2>
