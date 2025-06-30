@@ -2346,16 +2346,38 @@ function App() {
       }
       // Second pass: Yellow & Black check
       for (let i = 0; i < 5; i++) {
-        if (result[i] === 'y') {
-          if (word[i] === guess[i]) return false;
-          if (!word.includes(guess[i])) return false;
-        }
-        if (result[i] === 'b') {
-          const countInGuess = guess.split('').filter((ch, idx) => ch === guess[i] && result[idx] !== 'g' && idx !== i).length;
-          const countInWord = word.split('').filter((ch, idx) => ch === guess[i] && idx !== i).length;
-          if (word.includes(guess[i]) && countInWord > countInGuess) return false;
-        }
-      }
+  if (result[i] === 'y') {
+    // 字母必须存在但不能在这个位置
+    if (word[i] === guess[i]) return false;
+    if (!word.includes(guess[i])) return false;
+  }
+
+  if (result[i] === 'b') {
+    const letter = guess[i];
+
+    // 检查该字母是否出现在别的位置为 g/y
+    const isInGY = [...result].some((res, idx) =>
+      (res === 'g' || res === 'y') && guess[idx] === letter && idx !== i
+    );
+
+    // 如果这个字母没有在别处是 g/y，但在候选词里还出现 → 不合法
+    if (!isInGY && word.includes(letter)) {
+      return false;
+    }
+
+    // 多字母处理（保留你原本的逻辑）
+    const countInGuess = guess
+      .split('')
+      .filter((ch, idx) => ch === letter && result[idx] !== 'g' && idx !== i).length;
+
+    const countInWord = word
+      .split('')
+      .filter((ch, idx) => ch === letter && idx !== i).length;
+
+    if (countInWord > countInGuess) return false;
+  }
+}
+
     }
     return true;
   };
