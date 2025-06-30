@@ -2397,6 +2397,24 @@ function App() {
         <input value={currentResult} maxLength={5} placeholder="Result (e.g. gbbyb)" onChange={(e) => setCurrentResult(e.target.value)} />
         <button onClick={handleAddTry}>Add Try</button>
         <button onClick={handleSuggest}>Suggest Word</button>
+        <button
+  onClick={() => {
+    setGuessHistory([]);     // 猜词历史记录清空
+    setSuggestedWords([]);   // 建议词清空（根据你 state 的命名调整）
+    setInput("");            // 输入框清空
+  }}
+  style={{
+    marginTop: '10px',
+    backgroundColor: '#222',
+    color: '#0f0',
+    border: '1px solid #0f0',
+    padding: '6px 12px',
+    borderRadius: '5px',
+    cursor: 'pointer'
+  }}
+>
+  Reset
+        </button>
       </div>
       <div className="history">
         <h2>History:</h2>
