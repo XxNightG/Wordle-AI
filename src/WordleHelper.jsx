@@ -78,8 +78,8 @@ function App() {
     <div className="app">
       <h1 className="title">Wordle AI</h1>
       <div className="input-container">
-        <input value={currentWord} maxLength={5} placeholder="Guess (e.g. adieu)" onChange={(e) => setCurrentWord(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') handleAddTry();}} onKeyDown={(e) => {if (e.key === 'Enter') handleSuggest();}} />
-        <input value={currentResult} maxLength={5} placeholder="Result (e.g. gbbyb)" onChange={(e) => setCurrentResult(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') handleAddTry();}} onKeyDown={(e) => {if (e.key === 'Enter') handleSuggest();}} />
+        <input value={currentWord} maxLength={5} placeholder="Guess (e.g. adieu)" onChange={(e) => setCurrentWord(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') handleAddTry();}} />
+        <input value={currentResult} maxLength={5} placeholder="Result (e.g. gbbyb)" onChange={(e) => setCurrentResult(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') handleAddTry();}} />
         <button onClick={handleAddTry}>Add Try</button>
         <button onClick={handleSuggest}>Suggest Word</button>
         <button
