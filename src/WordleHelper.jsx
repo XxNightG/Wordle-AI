@@ -12,14 +12,23 @@ function App() {
   const [suggestions, setSuggestions] = useState([]);
 
   const handleAddTry = () => {
-    if (currentWord.length !== 5 || currentResult.length !== 5) return alert("Please enter 5-letter word and 5-letter result.");
-    setTries([...tries, {
-      word: currentWord.toLowerCase(),
-      result: currentResult.toLowerCase(),
-    }]);
-    setCurrentWord("");
-    setCurrentResult("");
-  };
+  if (currentWord.length !== 5 || currentResult.length !== 5) {
+    return alert("Please enter 5-letter word and 5-letter result.");
+  }
+
+  const newTries = [...tries, {
+    word: currentWord.toLowerCase(),
+    result: currentResult.toLowerCase(),
+  }];
+
+  setTries(newTries);
+  setCurrentWord("");
+  setCurrentResult("");
+
+  // 自动 Suggest
+  const filtered = allWords.filter(word => matchesFeedback(word, newTries));
+  setSuggestions(filtered);
+};
 
   const matchesFeedback = (word, guesses) => {
     for (const { word: guess, result } of guesses) {
@@ -78,8 +87,25 @@ function App() {
     <div className="app">
       <h1 className="title">Wordle AI</h1>
       <div className="input-container">
-        <input value={currentWord} maxLength={5} placeholder="Guess (e.g. adieu)" onChange={(e) => setCurrentWord(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') handleAddTry();}} />
-        <input value={currentResult} maxLength={5} placeholder="Result (e.g. gbbyb)" onChange={(e) => setCurrentResult(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') handleAddTry();}} />
+        <input
+  value={currentWord}
+  maxLength={5}
+  placeholder="Guess (e.g. adieu)"
+  onChange={(e) => setCurrentWord(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter') handleAddTry();
+  }}
+/>
+<input
+  value={currentResult}
+  maxLength={5}
+  placeholder="Result (e.g. gbbyb)"
+  onChange={(e) => setCurrentResult(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter') handleAddTry();
+  }}
+/>
+
         <button onClick={handleAddTry}>Add Try</button>
         <button onClick={handleSuggest}>Suggest Word</button>
         <button
